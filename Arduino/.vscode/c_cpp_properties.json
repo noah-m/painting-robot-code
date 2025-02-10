@@ -10,6 +10,7 @@
             "includePath": [
                 "C:/Users/NoahM/OneDrive - UBC/IGEN 330 Paint Robot Shared Folder/Paint Robot Code/Paint Robot/Arduino/include",
                 "C:/Users/NoahM/OneDrive - UBC/IGEN 330 Paint Robot Shared Folder/Paint Robot Code/Paint Robot/Arduino/src",
+                "C:/Users/NoahM/OneDrive - UBC/IGEN 330 Paint Robot Shared Folder/Paint Robot Code/Paint Robot/Arduino/.pio/libdeps/megaatmega1280/AccelStepper/src",
                 "C:/Users/NoahM/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "C:/Users/NoahM/.platformio/packages/framework-arduino-avr/variants/mega",
                 "C:/Users/NoahM/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
@@ -24,6 +25,7 @@
                 "path": [
                     "C:/Users/NoahM/OneDrive - UBC/IGEN 330 Paint Robot Shared Folder/Paint Robot Code/Paint Robot/Arduino/include",
                     "C:/Users/NoahM/OneDrive - UBC/IGEN 330 Paint Robot Shared Folder/Paint Robot Code/Paint Robot/Arduino/src",
+                    "C:/Users/NoahM/OneDrive - UBC/IGEN 330 Paint Robot Shared Folder/Paint Robot Code/Paint Robot/Arduino/.pio/libdeps/megaatmega1280/AccelStepper/src",
                     "C:/Users/NoahM/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "C:/Users/NoahM/.platformio/packages/framework-arduino-avr/variants/mega",
                     "C:/Users/NoahM/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
