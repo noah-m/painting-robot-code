@@ -1,8 +1,5 @@
 #include <AccelStepper.h>
-
-// Define pin connections
-#define STEP_PIN 3  // Connect to PUL-
-#define DIR_PIN 2   // Connect to DIR-
+#include <pins.h>
 
 // Create an AccelStepper object in DRIVER mode (1 = driver mode)
 AccelStepper stepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);
@@ -14,6 +11,12 @@ void setup() {
 
   // Set the initial speed (positive for one direction, negative for the other)
   stepper.setSpeed(-2000); // Steps per second
+
+  if (VERT_LIMIT == HIGH)
+  {
+    Serial.println("On");
+  }
+  
 }
 
 void loop() {
