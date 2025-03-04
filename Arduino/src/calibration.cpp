@@ -5,10 +5,10 @@
 
 void calibrate() {
 
-    // ## If zeroing button is pushsed on start-up, enter manual zeroing mode. Otherwise, use location from EEPROM.
+    // If zeroing button is pushsed on start-up, enter manual zeroing mode. Otherwise, use location from EEPROM.
     if (ZERO_BUTTON == PUSHED) {
       // Manual zeroing
-      stepper.setSpeed(-100);
+      stepper.setSpeed(-DEFAULT_SPEED);
       while (ZERO_BUTTON == PUSHED)
       {
         stepper.runSpeed();
