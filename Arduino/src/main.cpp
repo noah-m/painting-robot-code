@@ -1,9 +1,9 @@
 #include <AccelStepper.h>
 #include <EEPROM.h>
 
-#include <define.h>
-#include <driving.h>
-#include <calibration.h>
+#include "globals.h"
+#include "driving.h"
+#include "calibration.h"
 
 //Prototypes
 void callibrate();
