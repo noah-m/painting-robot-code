@@ -16,6 +16,9 @@ void calibrate() {
     savePositionToEEPROM(stepper.currentPosition());
     resetServo();
 
+    float wallDistanceMillimeters = servoToMillimeters(wallDistance);
+    float trimDistanceMillimeters = stepperToMillimeters(trimDistnace);
+
     Serial.println("Calibration complete");
     Serial.print("Wall distance: ");
     Serial.println(wallDistance);
@@ -61,8 +64,7 @@ long findWallDistance() {
             }
         }
     }
-
-    // TODO: Convert angle to wall distance
+    return angle;
 }
 
 long findTrimDistance() {
@@ -92,5 +94,15 @@ long getPositionFromEEPROM() {
     Serial.print(position);
     Serial.println(" retrieved from EEPROM");
     return position;
+}
+
+float servoToMillimeters(long servoDistance) {
+    return servoDistance * 0.5;
+    // this is fake code 
+}
+
+float stepperToMillimeters(long stepperDistance) {
+    return stepperDistance * 0.5;
+    // Also fake code 
 }
 
