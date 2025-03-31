@@ -5,9 +5,8 @@
 #include <EEPROM.h>
 #include "globals.h"
 
-void pin_setup(void);
 void calibrate();
-void manualZeroing();
+void AutoZero(int speed);
 void retrievePositionFromEEPROM();
 void moveToTop();
 long findWallDistance();
@@ -17,5 +16,10 @@ void savePositionToEEPROM(long position);
 long getPositionFromEEPROM();
 float servoToMillimeters(long servoDistance);
 float stepperToMillimeters(long stepperDistance);
+void initiateOffset(int offset);
+
+void receiveData(int byteCount);
+void pin_setup(void);
+void drive(int command, int speed_slower, int speed_faster);
 
 #endif // CALIBRATION_H

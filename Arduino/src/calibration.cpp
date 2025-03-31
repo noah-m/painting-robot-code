@@ -1,68 +1,51 @@
-#include "calibration.h"
 #include <AccelStepper.h>
 #include <EEPROM.h>
+#include <Wire.h>
+
 #include "globals.h"
 
-void pin_setup(void) {
-    Serial.begin(9600);
-    pinMode(ENA_NEG_PIN, OUTPUT);
-    pinMode(ENA_POS_PIN, OUTPUT);
-    pinMode(DIR_NEG_PIN, OUTPUT);
-    pinMode(DIR_POS_PIN, OUTPUT);
-    pinMode(PUL_NEG_PIN, OUTPUT);
-    pinMode(PUL_POS_PIN, OUTPUT);
-    pinMode(LIMIT_GND_1_PIN, OUTPUT);
-    pinMode(HORZ_LIMIT_PIN, INPUT_PULLUP);
-    pinMode(VERT_LIMIT_PIN, INPUT_PULLUP);
-    pinMode(LIMIT_GND_2_PIN, OUTPUT);
-    pinMode(ZERO_BUTTON_PIN, INPUT_PULLUP);
-    pinMode(SERVO_PIN, OUTPUT);
-
-    digitalWrite(ENA_NEG_PIN, HIGH);  // LOW usually enables the TB6600, but HIGH does on ours!!
-    digitalWrite(ENA_POS_PIN, HIGH);
-    digitalWrite(DIR_POS_PIN, HIGH);
-    digitalWrite(PUL_POS_PIN, HIGH);
-    digitalWrite(LIMIT_GND_1_PIN, LOW);
-    digitalWrite(LIMIT_GND_2_PIN, LOW);
-}
+#include "driving.h"
+#include "calibration.h"
+#include "painting.h"
 
 void calibrate() {
-    
-    Serial.println("Starting: pin_setup");
-    pin_setup();
-    
-    // if (ZERO_BUTTON_PIN == PUSHED) {
-    //     manualZeroing();
-    // } else {
-    //     retrievePositionFromEEPROM();
-    // }
 
-    Serial.println("Starting: manualZeroing");
-    manualZeroing();
+    Serial.println("Starting: AutoZero");
 
-    Serial.println("Starting: moveToTop");
-    moveToTop();
+    //Bring stepper to top position via limit switch and set as position zero
+    AutoZero(SET_SPEED);
 
+    // Increment the servo angle until the wall is detected
+    // and then decrement slightly to back off
     long wallDistance = findWallDistance();
-    long trimDistnace = findTrimDistance();
 
-    Serial.println("Starting savePositionToEEPROM");
-    savePositionToEEPROM(stepper.currentPosition());
+    // Move the stepper motor until the limit switch is pushed
+    // and return the current position as the trim distance
+    long trimDistance = findTrimDistance();
+
+    // Reset the servo to its initial position
     resetServo();
 
+    //Let servo reset
+    delay(1000);
+
+    // Move paint assembly to painting position
+    initiateOffset(-PAINT_OFFSET);
+
+    // Print the wall distance and trim distance in millimeters
     float wallDistanceMillimeters = servoToMillimeters(wallDistance);
-    float trimDistanceMillimeters = stepperToMillimeters(trimDistnace);
+    float trimDistanceMillimeters = stepperToMillimeters(trimDistance);
     Serial.println("Calibration complete");
     Serial.print("Wall distance: ");
     Serial.println(wallDistance);
     Serial.print("Trim distance: ");
-    Serial.println(trimDistnace);
+    Serial.println(trimDistance);
 }
 
-void manualZeroing() {
-    stepper.setSpeed(-DEFAULT_SPEED);
+void AutoZero(int speed) {
+    stepper.setSpeed(speed);
     while (digitalRead(ZERO_BUTTON_PIN) == NOT_PUSHED) {
-        Serial.println("Zero_Button_Pin Not Pushed");
+        //Serial.println("Zero_Button_Pin Not Pushed");
         stepper.runSpeed();
     }
     Serial.println("Zero_Button_Pin Pushed");
@@ -75,9 +58,9 @@ void retrievePositionFromEEPROM() {
 }
 
 void moveToTop() {
-    stepper.moveTo(TOP_POSITION);
+    stepper.moveTo(MAX_STEPPER_POSITION);
     stepper.runToPosition();
-    savePositionToEEPROM(TOP_POSITION);
+    savePositionToEEPROM(MAX_STEPPER_POSITION);
 }
 
 long findWallDistance() {
@@ -85,26 +68,39 @@ long findWallDistance() {
     analogWrite(SERVO_PIN, angle);
     delay(SERVO_DELAY);
 
-    while (true) {
-        if (digitalRead(HORZ_LIMIT_PIN) == NOT_PUSHED && angle < MAX_SERVO_ANGLE) {
-            angle++;
-            analogWrite(SERVO_PIN, angle);
-            delay(SERVO_DELAY);
-        } else {
-            angle--;
-            analogWrite(SERVO_PIN, angle);
-            delay(SERVO_BACK_DELAY);
-            if (HORZ_LIMIT_PIN == PUSHED) {
-                break;
-            }
-        }
+    // while (true) {
+    //     if (digitalRead(HORZ_LIMIT_PIN) == NOT_PUSHED && angle < MAX_SERVO_ANGLE) {
+    //         // Increment the servo angle and write it to the servo
+    //         angle++;
+    //         analogWrite(SERVO_PIN, angle);
+    //         delay(SERVO_DELAY);
+    //     } else {
+    //         // Decrement the servo angle slightly to back off
+    //         angle--;
+    //         analogWrite(SERVO_PIN, angle);
+    //         delay(SERVO_BACK_DELAY);
+
+    //         // Break the loop if the limit switch is pushed
+    //         if (digitalRead(HORZ_LIMIT_PIN) == PUSHED) {
+    //             break;
+    //         }
+    //     }
+    // }
+
+    while (digitalRead(HORZ_LIMIT_PIN) == NOT_PUSHED && angle < MAX_SERVO_ANGLE) {
+        // Increment the servo angle and write it to the servo
+        angle++;
+        analogWrite(SERVO_PIN, angle);
+        delay(SERVO_DELAY);
     }
+
+    // Return the final angle value
     return angle;
 }
 
 long findTrimDistance() {
-    stepper.setSpeed(DEFAULT_SPEED);
-    while (digitalRead(HORZ_LIMIT_PIN) == NOT_PUSHED) {
+    stepper.setSpeed(-SET_SPEED);
+    while (digitalRead(VERT_LIMIT_PIN) == NOT_PUSHED) {
         stepper.runSpeed();
     }
     return stepper.currentPosition();
@@ -132,12 +128,16 @@ long getPositionFromEEPROM() {
 }
 
 float servoToMillimeters(long servoDistance) {
-    return servoDistance * 0.5;
+    return servoDistance * 1;
     // this is fake code 
 }
 
 float stepperToMillimeters(long stepperDistance) {
-    return stepperDistance * 0.5;
+    return stepperDistance * 1;
     // Also fake code 
 }
 
+void initiateOffset(int offset) {
+    stepper.move(offset);
+    stepper.runToPosition();
+}
