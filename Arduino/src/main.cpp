@@ -40,7 +40,7 @@ void setup() {
 void loop() {
     switch (robot_state) {
         case DRIVING:
-            Serial.println("Starting: Driving");
+            //Serial.println("Starting: Driving");
             // Perform driving-related tasks here
             // Allow loop() to iterate naturally
             break;
