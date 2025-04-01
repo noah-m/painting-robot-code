@@ -45,6 +45,9 @@ void loop() {
             while (true)
             {
               // Wait for the robot to receive commands from the Raspberry Pi
+              if (robot_state != DRIVING) {
+                break;
+              }
             }
             
             break;
