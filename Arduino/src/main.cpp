@@ -31,7 +31,7 @@ void setup() {
     stepper.setSpeed(SET_SPEED); // Steps per second
 
     // Set initial state
-    robot_state = CALIBRATING;
+    robot_state = DRIVING;
 
     // Reset servo to initial position
     resetServo();
@@ -121,7 +121,6 @@ void receiveData(int byteCount) {
       Serial.println("Stop command received");
       drive(STOP, 0, 0);
       robot_state = CALIBRATING;
-
     } 
     else if (command == 'F') {
       Serial.println("Forward command received");
@@ -129,7 +128,7 @@ void receiveData(int byteCount) {
     }
     else if (command == 'P'){
       Serial.println("Paint command recieved");
-      drive(STOP, 0, 0);
+      drive(INTO_WALL, 0, 0);
       robot_state = CALIBRATING;
     }
     else if (command == 'R'){
