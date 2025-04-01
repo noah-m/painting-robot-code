@@ -38,31 +38,27 @@ void setup() {
 }
 
 void loop() {
-
     switch (robot_state) {
         case DRIVING:
             Serial.println("Starting: Driving");
-            while (true)
-            {
-              // Wait for the robot to receive commands from the Raspberry Pi
-              if (robot_state != DRIVING) {
-                break;
-              }
-            }
-            
+            // Perform driving-related tasks here
+            // Allow loop() to iterate naturally
             break;
+
         case CALIBRATING:
             Serial.println("Starting: Calibrate");
             calibrate();
             robot_state = PAINTING; // Change state to PAINTING after calibration
             break;
+
         case PAINTING:
             Serial.println("Starting: Painting");
             paint();
             break;
+
         case STOPPED:
             Serial.println("Starting: Stopped");
-            //stop drive motors
+            drive(STOP, 0, 0);
             delay(100000000);
             break;
     }
