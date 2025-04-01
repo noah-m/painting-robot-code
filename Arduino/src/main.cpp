@@ -1,6 +1,7 @@
 #include <AccelStepper.h>
 #include <EEPROM.h>
 #include <Wire.h>
+#include <Servo.h>
 
 #include "globals.h"
 #include "driving.h"
@@ -10,6 +11,9 @@
 // Create an AccelStepper object in DRIVER mode (1 = driver mode)
 AccelStepper stepper(AccelStepper::DRIVER, PUL_NEG_PIN, DIR_NEG_PIN);
 AccelStepper paintStepper(AccelStepper::DRIVER, PAINT_PUL_NEG_PIN, PAINT_DIR_NEG_PIN);
+
+// Create a Servo object to control the servo motor
+Servo myservo;
 
 // Robot states (declared in globals.h)
 ROBOT_STATES robot_state;
@@ -27,7 +31,7 @@ void setup() {
     stepper.setSpeed(SET_SPEED); // Steps per second
 
     // Set initial state
-    robot_state = DRIVING;
+    robot_state = CALIBRATING;
 
     // Reset servo to initial position
     resetServo();
@@ -82,7 +86,7 @@ void pin_setup(void) {
   pinMode(VERT_LIMIT_PIN, INPUT_PULLUP);
   pinMode(LIMIT_GND_2_PIN, OUTPUT);
   pinMode(ZERO_BUTTON_PIN, INPUT_PULLUP);
-  pinMode(SERVO_PIN, OUTPUT);
+  myservo.attach(SERVO_PIN); // Attach the servo to the specified pin
 
   pinMode(Motor1_In1, OUTPUT);
   pinMode(Motor1_In2, OUTPUT);
@@ -115,12 +119,7 @@ void receiveData(int byteCount) {
 
     if (command == 'S') {
       Serial.println("Stop command received");
-      while (true)
-      {
-        analogWrite(SERVO_PIN, MIN_SERVO_ANGLE);
-        delay(1000);
-        analogWrite(SERVO_PIN, MAX_SERVO_ANGLE);
-      }
+      drive(STOP, 0, 0);
       robot_state = CALIBRATING;
 
     } 
@@ -130,12 +129,7 @@ void receiveData(int byteCount) {
     }
     else if (command == 'P'){
       Serial.println("Paint command recieved");
-      while (true)
-      {
-        analogWrite(SERVO_PIN, MIN_SERVO_ANGLE);
-        delay(1000);
-        analogWrite(SERVO_PIN, MAX_SERVO_ANGLE);
-      }
+      drive(STOP, 0, 0);
       robot_state = CALIBRATING;
     }
     else if (command == 'R'){

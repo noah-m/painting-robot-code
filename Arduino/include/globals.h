@@ -2,6 +2,7 @@
 #define globals_h
 
 #include <AccelStepper.h>
+#include <Servo.h>
 
 // Define the robot states enum
 enum ROBOT_STATES {DRIVING, CALIBRATING, PAINTING, STOPPED};
@@ -20,6 +21,7 @@ enum MOVEMENT_STATES {
 extern AccelStepper stepper;
 extern AccelStepper paintStepper;
 extern ROBOT_STATES robot_state;
+extern Servo myservo;
 
 // Define pin connections
 #define UNO_ADDR 29  // Same I2C address used in Raspberry Pi code
@@ -65,8 +67,8 @@ extern ROBOT_STATES robot_state;
 // Other definitions for constants
 #define EEPROM_POSITION_ADDR 0
 #define MAX_STEPPER_POSITION 80000
-#define MIN_SERVO_ANGLE 60
-#define MAX_SERVO_ANGLE 250
+#define MIN_SERVO_ANGLE 0 // Retracted state
+#define MAX_SERVO_ANGLE 168
 #define SERVO_DELAY 20
 #define SERVO_BACK_DELAY 500
 

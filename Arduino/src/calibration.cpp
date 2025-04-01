@@ -1,6 +1,7 @@
 #include <AccelStepper.h>
 #include <EEPROM.h>
 #include <Wire.h>
+#include <Servo.h>
 
 #include "globals.h"
 
@@ -65,7 +66,7 @@ void moveToTop() {
 
 long findWallDistance() {
     int angle = MIN_SERVO_ANGLE;
-    analogWrite(SERVO_PIN, angle);
+    myservo.write(angle); // Set the servo to its initial angle
     delay(SERVO_DELAY);
 
     // while (true) {
@@ -90,7 +91,7 @@ long findWallDistance() {
     while (digitalRead(HORZ_LIMIT_PIN) == NOT_PUSHED && angle < MAX_SERVO_ANGLE) {
         // Increment the servo angle and write it to the servo
         angle++;
-        analogWrite(SERVO_PIN, angle);
+        myservo.write(angle); // Use Servo library to set angle
         delay(SERVO_DELAY);
     }
 
@@ -107,7 +108,7 @@ long findTrimDistance() {
 }
 
 void resetServo() {
-    analogWrite(SERVO_PIN, MIN_SERVO_ANGLE);
+    myservo.write(MIN_SERVO_ANGLE); // Set the servo to its minimum angle
     delay(SERVO_DELAY);
 }
 
