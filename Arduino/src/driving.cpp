@@ -98,5 +98,5 @@ void drive(int command, int speed_slower, int speed_faster)
     analogWrite(Motor4_In1, pin1[3]);
     analogWrite(Motor4_In2, pin2[3]);
 
-    Serial.println("command"); 
+    //Serial.println("command"); 
 }

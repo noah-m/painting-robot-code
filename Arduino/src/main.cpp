@@ -34,7 +34,7 @@ void setup() {
     robot_state = DRIVING;
 
     // Reset servo to initial position
-    resetServo();
+    //resetServo();
 }
 
 void loop() {
@@ -128,7 +128,7 @@ void receiveData(int byteCount) {
     }
     else if (command == 'P'){
       Serial.println("Paint command recieved");
-      drive(INTO_WALL, 0, 0);
+      drive(INTO_WALL, 40, 50);
       robot_state = CALIBRATING;
     }
     else if (command == 'R'){
